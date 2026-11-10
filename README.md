@@ -56,13 +56,13 @@ npm run build
 
 ## 외부 연결과 배포에 남은 설정
 
-API 주소와 Supabase URL·공개 키를 설정했습니다. 별도 `pwd-week8-server` 폴더에 8주차 서버도 구현하고 4000번 포트에서 실행했습니다. `/health` 200과 클라이언트 CORS를 확인했고, 서버 API·서비스 테스트 58개와 PostgreSQL 테스트 10개가 통과했습니다. 실제 Supabase 서버 키와 SQL 준비가 필요하며 맛집 응답·회원가입·로그인·프로필 저장·관리자 CRUD·제보 승인은 아직 통합 검증하지 못했습니다. Google·네이버의 실제 동의 화면도 공급자 설정 후 확인해야 합니다.
+API 주소와 Supabase URL·공개 키를 설정했습니다. 별도 `pwd-week8-server` 폴더에 8주차 서버도 구현하고 4000번 포트에서 실행했습니다. 실제 Supabase에 스키마·기본 맛집 3건을 적용했습니다. `/health` 200·CORS·맛집 응답을 확인했고, 서버 API·서비스 테스트 58개와 PostgreSQL 테스트 10개가 통과했습니다. 실제 Supabase Auth 계정을 이용한 로그인·프로필·권한·관리자 CRUD·제보 승인·세션 갱신·로그아웃 검사도 통과했습니다. 본인 관리자 계정도 생성했으며 임시 로그인 정보는 서버의 `.env.admin.local`에 있습니다. 일반 사용자의 이메일 가입·메일 확인과 브라우저 전체 흐름, Google·네이버 로그인은 추가 확인이 필요합니다.
 
-1. `pwd-week8-server`의 `.env`에 같은 Supabase 프로젝트의 서버 Secret key를 설정하고 `supabase/schema.sql`, `supabase/seed.sql`을 순서대로 적용합니다. 로컬 `CLIENT_URL`은 설정했습니다.
+1. 서버 Secret key·DB 스키마·기본 데이터·로컬 `CLIENT_URL`은 준비했습니다. Supabase SQL을 다시 수동 실행할 필요는 없습니다.
 2. Supabase Redirect URLs에 `http://127.0.0.1:5173/auth/callback`을 등록합니다. Google·네이버 공급자는 원본 실습 안내의 9절에 맞춰 설정합니다.
-3. 본인 [클라이언트 저장소](https://github.com/KwonWooJin0626/pwd-week8-client)와 [서버 저장소](https://github.com/KwonWooJin0626/pwd-week8-server)에 소스·설정·테스트·lock 파일을 반영합니다. 실제 환경변수와 `node_modules`, `dist`는 제외합니다.
-4. Vercel에서 Vite, Node 24.x, Install `npm ci --include=dev`, Build `npm run build`, Output `dist`로 설정합니다.
-5. Vercel의 API 환경변수에는 본인 Render HTTPS 기본 주소를 사용하고, Supabase 공개 환경변수 두 개도 등록합니다. `vercel.json`이 `/auth/callback` 직접 접근을 처리합니다.
-6. 서버 CORS와 Supabase·공급자 설정에 배포 주소를 추가한 뒤 실제 계정으로 일반 사용자·관리자 흐름을 확인합니다.
+3. 본인 [클라이언트 저장소](https://github.com/KwonWooJin0626/pwd-week8-client)와 [서버 저장소](https://github.com/KwonWooJin0626/pwd-week8-server)에 업로드했습니다. 실제 환경변수와 `node_modules`, `dist`는 제외했습니다.
+4. Vercel 프로젝트에 Vite, Node 24.x, Install `npm ci --include=dev`, Build `npm run build`, Output `dist`를 설정했습니다.
+5. Vercel 배포와 Render API 연결을 완료했습니다. 클라이언트는 `https://pwd-week8-client-ashy.vercel.app`, API는 `https://pwd-week8-server-kwonwoojin-hpek.onrender.com`입니다. `vercel.json`이 `/auth/callback` 직접 접근을 처리합니다.
+6. 서버 CORS에 배포 주소를 등록했습니다. Supabase·공급자 설정에도 배포 주소를 추가한 뒤 실제 계정으로 이메일 확인·소셜 로그인·브라우저 전체 흐름을 확인해야 합니다.
 
 GitHub·Vercel·Render의 실제 작업 결과와 남은 설정은 `SETUP_STATUS.md`에서 확인합니다.
