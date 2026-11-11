@@ -50,16 +50,18 @@ npm test
 npm run build
 ```
 
-인증 콜백 테스트 8개와 좋아요 저장·복원·저장 실패 복구 테스트 5개가 있습니다.
+인증 콜백 테스트 11개와 좋아요 저장·복원·저장 실패 복구 테스트 5개가 있습니다.
 
 2026-11-10 확인: 타입 검사·린트·빌드 통과. 브라우저에서 홈·가입 화면, 제보·관리자 화면의 비로그인 리디렉션, 비밀번호 표시 전환, 소셜 로그인 취소 복귀를 확인했습니다. Codex 샌드박스에서는 SWC 사용자 캐시 접근 제한이 있어 빌드와 개발 서버를 일반 사용자 권한으로 실행했습니다. 빌드에는 단일 JS 청크가 500 kB를 넘는 크기 경고가 있습니다.
+
+2026-11-11 확인: Google OAuth 앱과 Supabase 연결 후 운영 사이트의 Google 로그인·대시보드 복귀·새로고침 복원을 확인했습니다. 만료된 OAuth 요청이 Site URL로 돌아올 때도 로그인 실패를 안내하도록 보완했고 관련 회귀 테스트를 포함한 16개 테스트·타입 검사·린트·빌드가 통과했습니다.
 
 ## 외부 연결과 배포에 남은 설정
 
 API 주소와 Supabase URL·공개 키를 설정했습니다. 별도 `pwd-week8-server` 폴더에 8주차 서버도 구현하고 4000번 포트에서 실행했습니다. 실제 Supabase에 스키마·기본 맛집 3건을 적용했습니다. `/health` 200·CORS·맛집 응답을 확인했고, 서버 API·서비스 테스트 58개와 PostgreSQL 테스트 10개가 통과했습니다. 실제 Supabase Auth 계정을 이용한 로그인·프로필·권한·관리자 CRUD·제보 승인·세션 갱신·로그아웃 검사도 통과했습니다. 본인 관리자 계정도 생성했으며 임시 로그인 정보는 서버의 `.env.admin.local`에 있습니다. 일반 사용자의 이메일 가입·메일 확인과 브라우저 전체 흐름, Google·네이버 로그인은 추가 확인이 필요합니다.
 
 1. 서버 Secret key·DB 스키마·기본 데이터·로컬 `CLIENT_URL`은 준비했습니다. Supabase SQL을 다시 수동 실행할 필요는 없습니다.
-2. Supabase Redirect URLs에 `http://127.0.0.1:5173/auth/callback`을 등록합니다. Google·네이버 공급자는 원본 실습 안내의 9절에 맞춰 설정합니다.
+2. Supabase Site URL과 로컬·운영 Redirect URLs를 등록했고 Google 공급자 설정과 실제 로그인을 확인했습니다. 네이버 공급자 연결은 남아 있습니다.
 3. 본인 [클라이언트 저장소](https://github.com/KwonWooJin0626/pwd-week8-client)와 [서버 저장소](https://github.com/KwonWooJin0626/pwd-week8-server)에 업로드했습니다. 실제 환경변수와 `node_modules`, `dist`는 제외했습니다.
 4. Vercel 프로젝트에 Vite, Node 24.x, Install `npm ci --include=dev`, Build `npm run build`, Output `dist`를 설정했습니다.
 5. Vercel 배포와 Render API 연결을 완료했습니다. 클라이언트는 `https://pwd-week8-client-ashy.vercel.app`, API는 `https://pwd-week8-server-kwonwoojin-hpek.onrender.com`입니다. `vercel.json`이 `/auth/callback` 직접 접근을 처리합니다.

@@ -1,11 +1,11 @@
 # 연결·배포 진행 상태
 
-기준일: 2026-11-10 (한국 시간). 실제 외부 설정과 검사 결과가 확인된 항목만 완료로 표시합니다.
+기준일: 2026-11-11 (한국 시간). 실제 외부 설정과 검사 결과가 확인된 항목만 완료로 표시합니다.
 
 ## 완료
 
 - 클라이언트 전체 실습 코드, Supabase URL·공개 키, API `http://localhost:4000` 설정.
-- 클라이언트 타입 검사·린트·빌드 및 테스트 13개 통과.
+- 클라이언트 타입 검사·린트·빌드 및 테스트 16개 통과.
 - 별도 `pwd-week8-server` 폴더에 인증·프로필·권한·맛집·제보·공급자 상태 API, SQL, 네이버 등록 스크립트 구현.
 - 서버 타입 검사·빌드, API·서비스·공급자 테스트 58개 및 PostgreSQL 테스트 10개 통과.
 - 로컬 서버 `/health` 200 및 `http://127.0.0.1:5173` CORS 허용 확인.
@@ -20,14 +20,18 @@
 - 지정한 본인 이메일로 최초 관리자 계정 생성·활성화. 임시 로그인 정보는 서버의 `.env.admin.local`에만 저장했고 Git 제외를 확인했습니다. 로그인 후 비밀번호를 변경합니다.
 - Render 배포가 `live` 상태이며, 공개 조회·실제 관리자 로그인 후 `/me`·사용자 목록이 모두 200으로 응답하는 것을 확인했습니다.
 - Render API 주소를 Vercel `VITE_API_BASE_URL`에 등록했습니다.
+- Supabase 대시보드에서 Site URL을 공개 운영 origin으로 저장하고, 로컬·운영 `/auth/callback` 주소 2개를 허용 목록에 추가했습니다.
+- Google OAuth 웹 클라이언트를 발급해 Supabase Google 공급자에 저장·활성화하고 본인 테스트 사용자를 등록했습니다.
+- 운영 사이트에서 실제 Google 로그인과 대시보드 복귀·새로고침 복원을 확인했습니다. 기존 이메일 관리자와 같은 UUID에 `email`, `google` identities가 연결된 것을 DB에서 확인했습니다.
+- 만료된 OAuth state 오류가 Site URL로 돌아와도 로그인 오류로 안내하도록 보완하고 회귀 테스트 3개를 추가했습니다.
 
 ## 필요한 외부 설정
 
 1. 서버 Secret key와 DB 준비는 완료했습니다. 추가 SQL 수동 실행은 필요하지 않습니다.
 2. 최초 관리자 계정은 준비했습니다. 본인이 로그인한 후 내 정보에서 임시 비밀번호를 변경합니다.
-3. Supabase Site URL에 `https://pwd-week8-client-ashy.vercel.app`, Redirect URLs에 로컬·배포의 `/auth/callback` 주소를 등록해야 합니다. 연결 도구에는 이 인증 설정을 변경하는 기능이 없어 콘솔 적용이 남아 있습니다.
-4. Google OAuth 웹 클라이언트 ID·Secret을 준비해 Supabase Google 공급자에 등록합니다. 사용자는 아직 앱을 발급하지 않았으며 현재 Google 공급자는 비활성화 상태입니다.
-5. 네이버 앱의 Client ID·Secret과 테스터를 준비하고 서버 `.env`에 설정한 뒤 `npm run auth:setup-naver`, `npm run auth:check`를 실행합니다. 사용자는 아직 앱을 발급하지 않았으며 현재 `custom:naver`는 미등록 상태입니다.
+3. Supabase Site URL과 로컬·배포 Redirect URLs 등록은 완료했습니다.
+4. Google 연결·실제 로그인은 완료했습니다. 앱은 테스트 모드이며 추가 계정은 Google 테스트 사용자로 등록해야 합니다.
+5. 네이버 앱 `pwd-week-client`의 서비스 URL과 콜백 주소는 확인했습니다. 앱 Client ID·Secret의 로컬 서버 저장·Supabase 전송 승인과 키 입력 후 `npm run auth:setup-naver`, `npm run auth:check`를 실행해야 합니다. 현재 `custom:naver`는 미등록 상태이며 새 개발자 센터 탭에서 재로그인이 필요합니다.
 
 Google·네이버 공급자 Callback URL: `https://joovhrxjefwmydoaezrx.supabase.co/auth/v1/callback`.
 
@@ -43,6 +47,6 @@ Vercel: https://pwd-week8-client-ashy.vercel.app
 
 운영 배포가 `READY` 상태입니다. 공개 운영 도메인의 HTML과 `/auth/callback` 직접 접근이 200으로 응답합니다. 배포 JS에 실제 Render API 주소가 반영되었고 실제 서버 Secret key가 포함되지 않았음을 확인했습니다. 로컬 `.env.local`의 API 주소는 요청대로 `http://localhost:4000`을 유지합니다. 팀 도메인과 개별 배포 URL은 Vercel 인증이 적용되어 있으므로 공개 접속에는 위 `-ashy` 운영 도메인을 사용합니다.
 
-외부 콘솔 조작은 브라우저 도구가 Windows의 현재 주소를 확인하지 못해 중단되었습니다. Google OAuth 앱 발급·Supabase Google/URL 설정·네이버 앱 발급은 외부 콘솔에서 완료해야 합니다. 기존 7주차 서버·DB는 수정하지 않았습니다.
+Supabase URL 설정과 Google 연결·실제 로그인은 완료했습니다. 네이버 앱은 등록되었으며 인증정보 연결을 이어서 진행합니다. 기존 7주차 서버·DB는 수정하지 않았습니다.
 
 DB 보안 점검에서는 업무 테이블 3개의 [RLS 정책 없음 안내(INFO)](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)가 나왔습니다. 이 실습은 브라우저의 테이블 직접 접근을 차단하고 Express 서버만 접근하는 구조이며, 실제 검사에서도 익명·로그인 브라우저 역할의 직접 조회가 거절되는 것을 확인했습니다.

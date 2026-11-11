@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import AuthCallbackHandler from './components/AuthCallbackHandler';
+import { isAuthCallback } from './utils/oauthCallback';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -38,8 +39,8 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // 외부 인증은 해시 없는 /auth/callback으로 복귀하므로 HashRouter를 만들기 전에 처리합니다.
-  if (window.location.pathname === '/auth/callback') return <AuthCallbackHandler />;
+  // 정상 콜백과 Site URL로 돌아온 공급자 오류를 HashRouter보다 먼저 처리합니다.
+  if (isAuthCallback(new URL(window.location.href))) return <AuthCallbackHandler />;
   return (
     // AuthProvider가 조회 캐시를 사용하므로 QueryClientProvider 안에 배치합니다.
     <QueryClientProvider client={queryClient}>

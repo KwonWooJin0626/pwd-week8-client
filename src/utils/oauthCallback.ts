@@ -10,6 +10,12 @@ export function oauthCallbackError(search = '', hash = ''): string | null {
   }
   return null;
 }
+
+export function isAuthCallback(url: URL): boolean {
+  // 만료된 OAuth state는 지정 콜백 대신 Site URL로 오류를 돌려줄 수 있습니다.
+  return url.pathname === '/auth/callback' || oauthCallbackError(url.search, url.hash) !== null;
+}
+
 export interface CodeExchanger {
   exchangeCodeForSession: (code: string) => Promise<{
     data: { session: unknown | null }; error: unknown;

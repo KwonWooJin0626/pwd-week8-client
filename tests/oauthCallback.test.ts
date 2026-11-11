@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { completeAuthCallback, oauthCallbackError } from "../src/utils/oauthCallback.ts";
+import { completeAuthCallback, isAuthCallback, oauthCallbackError } from "../src/utils/oauthCallback.ts";
 
 test("정상 PKCE 복귀 코드를 로그인 오류로 처리하지 않는다", () => {
   assert.equal(oauthCallbackError("?code=single-use-code", ""), null);
@@ -78,4 +78,23 @@ test("공급자가 로그인을 취소하면 코드를 교환하지 않는다", 
   const route = await completeAuthCallback(callback("?code=unused#error=access_denied"), auth);
   assert.match(decodeURIComponent(route), /로그인이 취소/);
   assert.equal(exchangeCalls, 0);
+});
+
+test("만료된 OAuth state가 Site URL로 돌아와도 로그인 실패로 안내한다", async () => {
+  const url = new URL('https://app.example/?error=invalid_request&error_code=bad_oauth_state&error_description=OAuth+state+has+expired');
+  assert.equal(isAuthCallback(url), true);
+  const route = await completeAuthCallback(url);
+  assert.equal(decodeURIComponent(route), '/login?error=소셜 로그인을 완료하지 못했습니다. 다시 시도하세요.');
+  assert.doesNotMatch(route, /bad_oauth_state|expired/);
+});
+
+test("Site URL hash의 공급자 취소도 처리하지만 내부 로그인 오류 주소는 다시 처리하지 않는다", () => {
+  assert.equal(isAuthCallback(new URL('https://app.example/#error=access_denied')), true);
+  assert.equal(isAuthCallback(new URL('https://app.example/#/login?error=로그인실패')), false);
+});
+
+test("명시적인 콜백만 코드가 없어도 처리하고 일반 화면 주소는 유지한다", () => {
+  assert.equal(isAuthCallback(new URL('https://app.example/auth/callback')), true);
+  assert.equal(isAuthCallback(new URL('https://app.example/')), false);
+  assert.equal(isAuthCallback(new URL('https://app.example/?category=한식#/list')), false);
 });

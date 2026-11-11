@@ -17,24 +17,26 @@
 
 ## Supabase URL 설정
 
-[URL Configuration](https://supabase.com/dashboard/project/joovhrxjefwmydoaezrx/auth/url-configuration)에서 Site URL을 `https://pwd-week8-client-ashy.vercel.app`으로 설정하고 Redirect URLs에 `http://127.0.0.1:5173/auth/callback`과 `https://pwd-week8-client-ashy.vercel.app/auth/callback`을 추가합니다. 이 설정은 아직 직접 적용하지 못했으므로 콘솔에서 저장해야 합니다.
+[URL Configuration](https://supabase.com/dashboard/project/joovhrxjefwmydoaezrx/auth/url-configuration)에 Site URL `https://pwd-week8-client-ashy.vercel.app`과 Redirect URLs `http://127.0.0.1:5173/auth/callback`, `https://pwd-week8-client-ashy.vercel.app/auth/callback`을 저장했습니다. 대시보드에서 복귀 주소 2개의 저장 성공을 확인했습니다.
 
 ## Google
 
-1. [Google Cloud](https://console.cloud.google.com/)에서 사용할 프로젝트를 선택합니다.
-2. Google Auth Platform에서 앱 브랜딩·대상 사용자를 설정하고, 테스트 앱이면 실제 로그인할 계정을 테스터로 추가합니다.
-3. 클라이언트 유형이 **웹 애플리케이션**인 OAuth 클라이언트를 만듭니다. 일반 API Key나 서비스 계정 키를 사용하지 않습니다.
-4. Authorized JavaScript origins에 `http://127.0.0.1:5173`과 `https://pwd-week8-client-ashy.vercel.app`을 등록합니다.
-5. Authorized redirect URIs에 `https://joovhrxjefwmydoaezrx.supabase.co/auth/v1/callback`을 등록합니다.
-6. [Supabase Providers](https://supabase.com/dashboard/project/joovhrxjefwmydoaezrx/auth/providers)의 Google 공급자에 Client ID·Client Secret을 입력하고 활성화해 저장합니다.
+1. Google 계정의 2단계 인증 절차를 완료하고 [Ajou Campus Foodmap 프로젝트](https://console.cloud.google.com/auth/overview?project=ajou-campus-foodmap-514314)를 만들었습니다. 프로젝트 ID는 `ajou-campus-foodmap-514314`입니다.
+2. 본인의 정책 동의 후 앱 브랜딩 구성을 완료했고 본인 Google 계정을 테스트 사용자로 등록했습니다.
+3. **웹 애플리케이션** OAuth 클라이언트 `Ajou Campus Foodmap Web`을 발급했습니다.
+4. Authorized JavaScript origins에 `http://127.0.0.1:5173`과 `https://pwd-week8-client-ashy.vercel.app`을 등록했습니다.
+5. Authorized redirect URIs에 `https://joovhrxjefwmydoaezrx.supabase.co/auth/v1/callback`을 등록했습니다.
+6. [Supabase Providers](https://supabase.com/dashboard/project/joovhrxjefwmydoaezrx/auth/providers)에 발급한 Client ID·Client Secret을 저장하고 Google 공급자를 활성화했습니다.
 
-현재 확인한 Supabase Google 공급자는 비활성화 상태입니다. Client Secret은 `.env.example`이나 GitHub에 넣지 않습니다.
+운영 사이트에서 Google 로그인 → `/auth/callback` → 대시보드 복귀와 새로고침 후 세션 복원을 확인했습니다. 기존 이메일 관리자와 같은 UUID에 Google identity가 연결되어 관리자 역할도 유지됐습니다. 화면의 로그인 방식은 기존 앱 프로필의 `email` 값으로 표시됩니다. Client Secret은 `.env.example`이나 GitHub에 넣지 않습니다.
+
+Google 앱은 테스트 모드입니다. 추가 계정으로 시험하려면 Google Auth Platform의 대상 → 테스트 사용자에 해당 계정을 추가합니다.
 
 ## 네이버
 
-1. [네이버 개발자 센터](https://developers.naver.com/apps/#/register)에서 네이버 로그인 앱을 준비합니다.
-2. PC 웹 서비스 URL에 배포 주소 `https://pwd-week8-client-ashy.vercel.app`을 등록하고, 로컬 테스트가 필요하면 `http://127.0.0.1:5173`도 서비스 환경 설정에 추가합니다.
-3. 네이버 로그인 Callback URL에 `https://joovhrxjefwmydoaezrx.supabase.co/auth/v1/callback`을 등록합니다.
+1. 본인이 [네이버 개발자 센터](https://developers.naver.com/apps/)에서 앱 `pwd-week-client`를 등록했습니다.
+2. PC 웹 서비스 URL은 `https://pwd-week8-client-ashy.vercel.app`으로 확인했습니다.
+3. 네이버 로그인 Callback URL은 `https://joovhrxjefwmydoaezrx.supabase.co/auth/v1/callback`으로 확인했습니다. 이름·이메일·프로필 추가 제공 항목도 선택하지 않은 상태입니다.
 4. 멤버 관리에서 실제 로그인할 네이버 테스터를 등록합니다. 실습 안내대로 이름·이메일 추가 프로필을 필수로 요구하지 않습니다.
 5. 서버 `pwd-week8-server/.env`의 `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`에 앱 발급값을 입력합니다.
 6. 서버 폴더에서 아래 명령을 실행합니다. 기존 `custom:naver` 연결이 있으면 삭제하지 않고 확인 후 갱신합니다.
@@ -44,7 +46,7 @@ npm run auth:setup-naver
 npm run auth:check
 ```
 
-현재 `custom:naver`는 미등록 상태입니다. 네이버 OIDC 공개 설정과 PKCE 지원은 확인했습니다.
+현재 `custom:naver`는 미등록 상태입니다. 네이버 앱 키의 로컬 서버 저장·Supabase 전송 승인과 키 입력을 기다리고 있습니다. 기존 탭이 응답하지 않아 새 탭을 열었고, 새 탭에서 네이버 재로그인이 필요합니다. 네이버 OIDC 공개 설정과 PKCE 지원은 확인했습니다.
 
 ## 실제 확인
 
